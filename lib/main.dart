@@ -7,6 +7,8 @@ void main() {
   runApp(MyApp());
 }
 
+// final TextEditingController inputController;
+
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override
@@ -16,22 +18,26 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 // This widget is the root of your application.
   //controller
-  TextEditingController inputController = new TextEditingController();
-  //variabel berubah
-  double _inputUser = 0;
+  List<String> listViewItem = List<String>();
   //mengeset nilai pada dropdown
   String _newValue = "Kelvin";
   double _result = 0;
+
+  TextEditingController inputController = new TextEditingController();
+  double _inputSuhu = 0;
+  double _kelvin = 0;
+  double _reamur = 0;
   //list
   var listItem = {"Kelvin", "Reamur"};
 
   void perhitunganSuhu() {
     setState(() {
-      _inputUser = double.parse(inputController.text);
+      _inputSuhu = double.parse(inputController.text);
       if (_newValue == "Kelvin")
-        _result = _inputUser + 273;
+        _result = _inputSuhu + 273;
       else
-        _result = (4 / 5) * _inputUser;
+        _result = (4 / 5) * _inputSuhu;
+      listViewItem.add("$_newValue : $_result");
     });
   }
 
@@ -65,14 +71,31 @@ class _MyAppState extends State<MyApp> {
                 onChanged: (String changeValue) {
                   setState(() {
                     _newValue = changeValue;
+                    perhitunganSuhu();
                   });
-                }, //dropdownOnChanged,
+                },
               ),
-              Result(
-                result: _result,
-              ),
+              Result(result: _result),
               Convert(
                 convertHandler: perhitunganSuhu,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Riwayat Konversi",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                    children: listViewItem.map((String value) {
+                  return Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 15),
+                      ));
+                }).toList()),
               ),
             ],
           ),
